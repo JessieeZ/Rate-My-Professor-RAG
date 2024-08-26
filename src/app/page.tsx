@@ -2,7 +2,7 @@
 
 import { Box, Button, Stack, TextField, CircularProgress, Typography, AppBar, Toolbar } from '@mui/material'
 import { useState } from 'react'
-import { PineconeClient } from '@pinecone-database/pinecone';
+/*import { PineconeClient } from '@pinecone-database/pinecone';*/
 
 
 export default function Home() {
@@ -14,9 +14,9 @@ export default function Home() {
   ])
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const [link, setLink] = useState('')
+  /*const [link, setLink] = useState('')
   const [linkLoading, setLinkLoading] = useState(false)
-  const [linkStatus, setLinkStatus] = useState('')
+  const [linkStatus, setLinkStatus] = useState('')*/
   
 
   const sendMessage = async () => {
