@@ -1,0 +1,124 @@
+{
+  "reviews": [
+    {
+      "professor": "Dr. Emily Johnson",
+      "subject": "Biology",
+      "stars": 4,
+      "review": "Dr. Johnson's lectures are engaging and well-structured. She's always willing to help during office hours."
+    },
+    {
+      "professor": "Prof. Michael Chen",
+      "subject": "Computer Science",
+      "stars": 5,
+      "review": "Brilliant professor! Prof. Chen's passion for the subject is contagious. His programming assignments are challenging but rewarding."
+    },
+    {
+      "professor": "Dr. Sarah Thompson",
+      "subject": "Psychology",
+      "stars": 3,
+      "review": "Dr. Thompson knows her stuff, but her lectures can be a bit dry. Exams are fair though."
+    },
+    {
+      "professor": "Prof. David Martinez",
+      "subject": "Mathematics",
+      "stars": 4,
+      "review": "Prof. Martinez explains complex concepts clearly. His problem sets are tough but great for learning."
+    },
+    {
+      "professor": "Dr. Rachel Lee",
+      "subject": "English Literature",
+      "stars": 5,
+      "review": "Dr. Lee's passion for literature is inspiring. Her feedback on essays is incredibly helpful."
+    },
+    {
+      "professor": "Prof. James Wilson",
+      "subject": "Physics",
+      "stars": 2,
+      "review": "Prof. Wilson seems knowledgeable, but his teaching style is confusing. Labs are poorly organized."
+    },
+    {
+      "professor": "Dr. Laura Garcia",
+      "subject": "History",
+      "stars": 4,
+      "review": "Dr. Garcia brings history to life with her storytelling. Her exams can be challenging but fair."
+    },
+    {
+      "professor": "Prof. Robert Taylor",
+      "subject": "Chemistry",
+      "stars": 3,
+      "review": "Prof. Taylor's lectures are okay, but the pace is too fast sometimes. Lab sessions are well-structured."
+    },
+    {
+      "professor": "Dr. Olivia Brown",
+      "subject": "Sociology",
+      "stars": 5,
+      "review": "Dr. Brown is an excellent teacher and researcher. Her classes spark great discussions."
+    },
+    {
+      "professor": "Prof. Daniel Kim",
+      "subject": "Economics",
+      "stars": 4,
+      "review": "Prof. Kim explains complex economic theories clearly. His real-world examples are very helpful."
+    },
+    {
+      "professor": "Dr. Jessica Patel",
+      "subject": "Art History",
+      "stars": 5,
+      "review": "Dr. Patel's enthusiasm for art is infectious. Her virtual museum tours are a highlight of the course."
+    },
+    {
+      "professor": "Prof. Thomas Wright",
+      "subject": "Philosophy",
+      "stars": 3,
+      "review": "Prof. Wright's lectures can be hard to follow, but the reading list is excellent. Office hours are helpful."
+    },
+    {
+      "professor": "Dr. Amanda Foster",
+      "subject": "Environmental Science",
+      "stars": 4,
+      "review": "Dr. Foster's field trips make learning fun and practical. Her assignments encourage critical thinking."
+    },
+    {
+      "professor": "Prof. Christopher Lee",
+      "subject": "Political Science",
+      "stars": 2,
+      "review": "Prof. Lee seems biased in his lectures. Class discussions often get off-topic."
+    },
+    {
+      "professor": "Dr. Sophia Rodriguez",
+      "subject": "Linguistics",
+      "stars": 5,
+      "review": "Dr. Rodriguez is a brilliant teacher. Her interactive lessons make learning languages enjoyable."
+    },
+    {
+      "professor": "Prof. William Chang",
+      "subject": "Business Administration",
+      "stars": 4,
+      "review": "Prof. Chang's real-world experience adds value to his classes. Group projects are well-designed."
+    },
+    {
+      "professor": "Dr. Elizabeth Moore",
+      "subject": "Anthropology",
+      "stars": 3,
+      "review": "Dr. Moore's lectures are informative but can be monotonous. Her fieldwork stories are interesting though."
+    },
+    {
+      "professor": "Prof. Andrew Davis",
+      "subject": "Music Theory",
+      "stars": 5,
+      "review": "Prof. Davis is an exceptional teacher. His composition workshops are incredibly inspiring."
+    },
+    {
+      "professor": "Dr. Natalie Wong",
+      "subject": "Neuroscience",
+      "stars": 4,
+      "review": "Dr. Wong explains complex brain functions clearly. Her lab demonstrations are fascinating."
+    },
+    {
+      "professor": "Prof. Kevin O'Brien",
+      "subject": "Marketing",
+      "stars": 3,
+      "review": "Prof. O'Brien's lectures are decent, but the course could use more practical applications. Guest speakers are a plus."
+    }
+  ]
+}

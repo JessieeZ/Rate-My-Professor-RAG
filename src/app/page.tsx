@@ -1,113 +1,244 @@
-import Image from "next/image";
+'use client'
+
+import { Box, Button, Stack, TextField, CircularProgress, Typography, AppBar, Toolbar } from '@mui/material'
+import { useState } from 'react'
+import { PineconeClient } from '@pinecone-database/pinecone';
+
 
 export default function Home() {
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: `Hi! I'm the Rate My Professor support assistant. How can I help you today?`,
+    },
+  ])
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [link, setLink] = useState('')
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [linkStatus, setLinkStatus] = useState('')
+  
+
+  const sendMessage = async () => {
+    if (message.trim() === '') return;
+
+    setLoading(true)
+    setMessages((messages) => [
+      ...messages,
+      { role: 'user', content: message },
+      { role: 'assistant', content: '' },
+    ])
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([...messages, { role: 'user', content: message }]),
+      })
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let result = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const text = decoder.decode(value || new Uint8Array(), { stream: true })
+        setMessages((messages) => {
+          const lastMessage = messages[messages.length - 1]
+          const otherMessages = messages.slice(0, messages.length - 1)
+          return [
+            ...otherMessages,
+            { ...lastMessage, content: lastMessage.content + text },
+          ]
+        })
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+    } finally {
+      setLoading(false)
+      setMessage('')
+    }
+  }
+
+  /*
+  const submitLink = async () => {
+    if (link.trim() === '') return;
+
+    setLinkLoading(true);
+    setLinkStatus('');
+
+    try {
+      const response = await fetch('/api/submitURL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: 'https://www.ratemyprofessors.com/ShowRatings.jsp?tid=1234567' }),
+
+      });
+
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        setLinkStatus(data.message || 'Link submitted successfully!');
+      } else {
+        const text = await response.text();
+        console.error('Unexpected response type:', contentType, text);
+        setLinkStatus('Unexpected response format.');
+      }
+    } catch (error) {
+      console.error('Error submitting link:', error);
+      setLinkStatus('Error submitting link.');
+    } finally {
+      setLinkLoading(false);
+      setLink('');
+    }
+  };*/
+  
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <AppBar position="static" sx={{ backgroundColor: '#B2C3D3' }}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ textAlign: 'center', flexGrow: 1, fontFamily: 'Cormorant Garamond, serif', fontSize: '2rem' }}>
+            Rate My Professor 
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box
+        width="100vw"
+        height="calc(100vh - 64px)" 
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        bgcolor="background.default"
+        pt={2}
+      >
+        <Stack
+          direction="column"
+          width="100%"
+          maxWidth="600px"
+          height="80%"
+          borderRadius={2}
+          border="1px solid #ddd"
+          boxShadow={3}
+          p={2}
+          spacing={2}
+          bgcolor="background.paper"
+        >
+          <Stack
+            direction="column"
+            spacing={1}
+            flexGrow={1}
+            overflow="auto"
+            p={1}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+            {messages.map((message, index) => (
+              <Box
+                key={index}
+                display="flex"
+                justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end'}
+                mb={1}
+              >
+                <Box
+                  bgcolor={message.role === 'assistant' ? '#B2C3D3' : '#ebeff4'}
+                  color="text.primary"
+                  borderRadius={2}
+                  p={2}
+                  maxWidth="80%"
+                  boxShadow={1}
+                >
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: 'Cormorant Garamond, serif', 
+                      fontSize: '1rem' 
+                    }}
+                  >
+                    {message.content}
+                  </Typography>
+                </Box>
+              </Box>
+            ))}
+            {loading && (
+              <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                <CircularProgress />
+              </Box>
+            )}
+          </Stack>
+
+          <Stack direction="row" spacing={1} p={1}>
+            <TextField
+              label="Type your message"
+              fullWidth
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') sendMessage()
+              }}
+              variant="outlined"
+              size="small"
+              sx={{
+                '& .MuiInputBase-root': {
+                  borderRadius: 2,
+                },
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontFamily: 'Cormorant Garamond, serif'
+                },
+              }}
             />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+            <Button 
+              variant="contained" 
+              onClick={sendMessage}
+              disabled={loading || message.trim() === ''}
+              sx={{
+                fontFamily: 'Cormorant Garamond, serif',
+                height: '100%',
+                borderRadius: 2,
+                ':hover': {
+                  backgroundColor: 'primary.dark',
+                },
+              }}
+            >
+              Send
+            </Button>
+          </Stack>
+          
+          {/* Section for Link Submission */}
+          {/*
+          <Stack direction="column" spacing={2} p={2}>
+            <TextField
+              label="Submit Professor Link"
+              fullWidth
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              variant="outlined"
+              size="small"
+            />
+            <Button
+              variant="contained"
+              onClick={submitLink}
+              disabled={linkLoading || link.trim() === ''}
+            >
+              Submit Link
+            </Button>
+            {linkLoading && <CircularProgress />}
+            {linkStatus && <Typography variant="body2">{linkStatus}</Typography>}
+          </Stack>
+          */}
+        </Stack>
+      </Box>
+    </>
+  )
 }
