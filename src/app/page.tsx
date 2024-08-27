@@ -9,7 +9,11 @@ import logo from '/public/images/icon_white.png'
 import RobotStudy from '/public/images/main.png'
 import React, { useEffect, useState } from 'react';
 
-const TypingEffect = ({ text }) => {
+interface TypingEffectProps {
+  text: string;
+}
+
+const TypingEffect: React.FC<TypingEffectProps> = ({ text }) => {
   const [displayText, setDisplayText] = useState('');
 
   useEffect(() => {
