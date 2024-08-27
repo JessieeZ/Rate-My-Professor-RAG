@@ -1,244 +1,110 @@
 'use client'
 
-import { Box, Button, Stack, TextField, CircularProgress, Typography, AppBar, Toolbar } from '@mui/material'
-import { useState } from 'react'
-/*import { PineconeClient } from '@pinecone-database/pinecone';*/
+import Image from "next/image"
+import Head from 'next/head';
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs"
+import { Container, AppBar, Toolbar, Typography, Button, Box, Grid} from "@mui/material"
+import { styled } from '@mui/system';
+import logo from '/public/images/icon_white.png'
+import RobotStudy from '/public/images/main.png'
+import React, { useEffect, useState } from 'react';
 
+const TypingEffect = ({ text }) => {
+  const [displayText, setDisplayText] = useState('');
 
-export default function Home() {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: `Hi! I'm the Rate My Professor support assistant. How can I help you today?`,
-    },
-  ])
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-  /*const [link, setLink] = useState('')
-  const [linkLoading, setLinkLoading] = useState(false)
-  const [linkStatus, setLinkStatus] = useState('')*/
-  
-
-  const sendMessage = async () => {
-    if (message.trim() === '') return;
-
-    setLoading(true)
-    setMessages((messages) => [
-      ...messages,
-      { role: 'user', content: message },
-      { role: 'assistant', content: '' },
-    ])
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify([...messages, { role: 'user', content: message }]),
-      })
-
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let result = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        const text = decoder.decode(value || new Uint8Array(), { stream: true })
-        setMessages((messages) => {
-          const lastMessage = messages[messages.length - 1]
-          const otherMessages = messages.slice(0, messages.length - 1)
-          return [
-            ...otherMessages,
-            { ...lastMessage, content: lastMessage.content + text },
-          ]
-        })
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setDisplayText(text.substring(0, index + 1));
+      index += 1;
+      if (index === text.length) {
+        clearInterval(interval);
       }
-    } catch (error) {
-      console.error('Error sending message:', error)
-    } finally {
-      setLoading(false)
-      setMessage('')
-    }
-  }
+    }, 100); 
 
-  /*
-  const submitLink = async () => {
-    if (link.trim() === '') return;
-
-    setLinkLoading(true);
-    setLinkStatus('');
-
-    try {
-      const response = await fetch('/api/submitURL', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: 'https://www.ratemyprofessors.com/ShowRatings.jsp?tid=1234567' }),
-
-      });
-
-      const contentType = response.headers.get('Content-Type');
-      if (contentType && contentType.includes('application/json')) {
-        const data = await response.json();
-        setLinkStatus(data.message || 'Link submitted successfully!');
-      } else {
-        const text = await response.text();
-        console.error('Unexpected response type:', contentType, text);
-        setLinkStatus('Unexpected response format.');
-      }
-    } catch (error) {
-      console.error('Error submitting link:', error);
-      setLinkStatus('Error submitting link.');
-    } finally {
-      setLinkLoading(false);
-      setLink('');
-    }
-  };*/
-  
+    return () => clearInterval(interval);
+  }, [text]);
 
   return (
-    <>
-      <AppBar position="static" sx={{ backgroundColor: '#B2C3D3' }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ textAlign: 'center', flexGrow: 1, fontFamily: 'Cormorant Garamond, serif', fontSize: '2rem' }}>
-            Rate My Professor 
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Box
-        width="100vw"
-        height="calc(100vh - 64px)" 
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        bgcolor="background.default"
-        pt={2}
-      >
-        <Stack
-          direction="column"
-          width="100%"
-          maxWidth="600px"
-          height="80%"
-          borderRadius={2}
-          border="1px solid #ddd"
-          boxShadow={3}
-          p={2}
-          spacing={2}
-          bgcolor="background.paper"
-        >
-          <Stack
-            direction="column"
-            spacing={1}
-            flexGrow={1}
-            overflow="auto"
-            p={1}
-          >
-            {messages.map((message, index) => (
-              <Box
-                key={index}
-                display="flex"
-                justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end'}
-                mb={1}
-              >
-                <Box
-                  bgcolor={message.role === 'assistant' ? '#B2C3D3' : '#ebeff4'}
-                  color="text.primary"
-                  borderRadius={2}
-                  p={2}
-                  maxWidth="80%"
-                  boxShadow={1}
-                >
-                  <Typography 
-                    variant="body1" 
-                    sx={{ 
-                      whiteSpace: 'pre-wrap',
-                      fontFamily: 'Cormorant Garamond, serif', 
-                      fontSize: '1rem' 
-                    }}
-                  >
-                    {message.content}
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-            {loading && (
-              <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                <CircularProgress />
-              </Box>
-            )}
-          </Stack>
+    <div style={{
+      fontSize: '3.5rem', 
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word', 
+      textAlign: 'center',
+      overflow: 'hidden', 
+      maxWidth: '100%', 
+      margin: '0 auto', 
+    }}>
+      {displayText}
+    </div>
+  );
+};
 
-          <Stack direction="row" spacing={1} p={1}>
-            <TextField
-              label="Type your message"
-              fullWidth
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') sendMessage()
-              }}
-              variant="outlined"
-              size="small"
-              sx={{
-                '& .MuiInputBase-root': {
-                  borderRadius: 2,
-                },
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                },
-              }}
-              InputLabelProps={{
-                sx: {
-                  fontFamily: 'Cormorant Garamond, serif'
-                },
-              }}
-            />
-            <Button 
-              variant="contained" 
-              onClick={sendMessage}
-              disabled={loading || message.trim() === ''}
-              sx={{
-                fontFamily: 'Cormorant Garamond, serif',
-                height: '100%',
-                borderRadius: 2,
-                ':hover': {
-                  backgroundColor: 'primary.dark',
-                },
-              }}
-            >
-              Send
-            </Button>
-          </Stack>
-          
-          {/* Section for Link Submission */}
-          {/*
-          <Stack direction="column" spacing={2} p={2}>
-            <TextField
-              label="Submit Professor Link"
-              fullWidth
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              variant="outlined"
-              size="small"
-            />
-            <Button
-              variant="contained"
-              onClick={submitLink}
-              disabled={linkLoading || link.trim() === ''}
-            >
-              Submit Link
-            </Button>
-            {linkLoading && <CircularProgress />}
-            {linkStatus && <Typography variant="body2">{linkStatus}</Typography>}
-          </Stack>
-          */}
-        </Stack>
-      </Box>
-    </>
+const StyledButton = styled(Button)({
+  borderRadius: '20px',
+  textTransform: 'none',
+  padding: '10px 20px',
+});
+
+const BackgroundBox = styled(Box)({
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  background: 'linear-gradient(to right, #000000, #808080)',
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+export default function Home() { 
+  
+  return (
+    <BackgroundBox>
+      <Container maxWidth="lg">
+        <div id="home">
+          <Head>
+            <title>ProInsight</title>
+            <meta name="description" content="" />
+          </Head>
+
+            <Toolbar sx={{ padding: '30px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Image src={logo} alt="ProInsight Logo" width={125} height={125} />
+              <div>
+                <StyledButton color="inherit" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Chat
+                </StyledButton>
+                <StyledButton color="inherit" href="/review" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Review
+                </StyledButton>
+                <StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Search
+                </StyledButton>
+              </div>
+            </Toolbar>
+
+          <Box sx={{ my: 0 }}>
+            <Grid container spacing={4} alignItems="center">
+              <Grid item xs={12} md={6}>
+                <Typography variant="h2" component="h1" gutterBottom className="glowing-text" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', textAlign: 'center' }}>
+                  <TypingEffect text="Guiding your choices, empowering your voice." />
+                </Typography>
+                <Typography variant="h5" component="h2" gutterBottom style={{ fontFamily: 'Cormorant Garamond, serif', color: '#FFFFFF', fontSize: '1.5rem', textAlign: 'center' }}>
+                  Welcome to ProInsight! ProInsight helps you find and evaluate professor reviews quickly. Just ask about teaching styles, course content, or classroom experiences, and get the info you need to make informed decisions.
+                </Typography>
+                <Box sx={{ textAlign: 'center' }}>
+                  <StyledButton href="/chatbot" variant="outlined" color="primary" sx={{ mt: 2 }} style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem', color: "#FFFFFF" }}>
+                    Get Started
+                  </StyledButton>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Image src={RobotStudy} alt="Study Image" width={650} height={475} />
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </div>
+      </Container>
+    </BackgroundBox>
   )
 }
