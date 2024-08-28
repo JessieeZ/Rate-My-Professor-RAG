@@ -1,12 +1,12 @@
 'use client'
 
-import Image from "next/image"
+import Image from "next/image";
 import Head from 'next/head';
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs"
-import { Container, AppBar, Toolbar, Typography, Button, Box, Grid} from "@mui/material"
+import { Container, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, useMediaQuery, useTheme, Grid } from "@mui/material";
 import { styled } from '@mui/system';
-import logo from '/public/images/icon_white.png'
-import RobotStudy from '/public/images/main.png'
+import MenuIcon from '@mui/icons-material/Menu'; 
+import logo from '/public/images/icon_white.png';
+import RobotStudy from '/public/images/main.png';
 import React, { useEffect, useState } from 'react';
 
 interface TypingEffectProps {
@@ -59,8 +59,19 @@ const BackgroundBox = styled(Box)({
   flexDirection: 'column',
 });
 
-export default function Home() { 
-  
+export default function Home() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <BackgroundBox>
       <Container maxWidth="lg">
@@ -70,20 +81,57 @@ export default function Home() {
             <meta name="description" content="" />
           </Head>
 
-            <Toolbar sx={{ padding: '30px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Image src={logo} alt="ProInsight Logo" width={125} height={125} />
-              <div>
-                <StyledButton color="inherit" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
-                  Chat
-                </StyledButton>
-                <StyledButton color="inherit" href="/review" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
-                  Review
-                </StyledButton>
-                <StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
-                  Search
-                </StyledButton>
-              </div>
-            </Toolbar>
+          <Toolbar sx={{ padding: '30px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <Image src={logo} alt="ProInsight Logo" width={125} height={125} />
+            <div>
+              {isMobile && (
+                <div className="mobile-menu">
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    aria-controls="mobile-menu"
+                    aria-haspopup="true"
+                    onClick={handleMenuOpen}
+                    
+                  >
+                    <MenuIcon sx={{color: '#FFFFFF'}}/>
+                    
+                  </IconButton>
+                  <Menu
+                    id="mobile-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    sx={{
+                      '& .MuiMenu-paper': {
+                        backgroundColor: '#444444', 
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={handleMenuClose} component="a" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }} >Chat</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component="a" href="/review" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Review</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component="a" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Search</MenuItem>
+                  </Menu>
+                </div>
+              )}
+
+              {!isMobile && (
+                <div className="desktop-menu">
+                  <StyledButton color="inherit" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                    Chat
+                  </StyledButton>
+                  <StyledButton color="inherit" href="/review" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                    Review
+                  </StyledButton>
+                  <StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                    Search
+                  </StyledButton>
+                </div>
+              )}
+            </div>
+          </Toolbar>
 
           <Box sx={{ my: 0 }}>
             <Grid container spacing={4} alignItems="center">
@@ -101,14 +149,39 @@ export default function Home() {
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Image src={RobotStudy} alt="Study Image" width={650} height={475} />
-                </Box>
+                {!isMobile && (
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Image src={RobotStudy} alt="Study Image" width={650} height={475} />
+                  </Box>
+                )}
+                {isMobile && (
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Image src={RobotStudy} alt="Study Image" width={350} height={375} />
+                  </Box>
+                )}
               </Grid>
             </Grid>
           </Box>
         </div>
       </Container>
+
+      <style jsx>{`
+        .desktop-menu {
+          display: flex;
+        }
+        .mobile-menu {
+          display: none;
+        }
+        @media (max-width: 768px) {
+          .desktop-menu {
+            display: none;
+          }
+          .mobile-menu {
+            display: flex;
+            align-items: center;
+          }
+        }
+      `}</style>
     </BackgroundBox>
-  )
+  );
 }
