@@ -1,113 +1,86 @@
-import { NextResponse } from 'next/server'
-import { Pinecone } from '@pinecone-database/pinecone'
-import OpenAI from 'openai'
+import { NextResponse } from "next/server";
+import { Pinecone } from "@pinecone-database/pinecone";
 
-const systemPrompt = `
-System Prompt for Rate My Professor Agent:
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-You are a helpful, knowledgeable, and polite AI assistant for a service called "Rate My Professor." Your role is to assist users by answering questions about professors, courses, and universities, as well as guiding them on how to use the platform. Your responses should be friendly, professional, and informative. Please prioritize accuracy and clarity in your replies.
+// Access your API key as an environment variable (see "Set up your API key" above)
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-Guidlines:
+const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
 
-1. **Provide Accurate Information**: Use the available data to answer questions about professor ratings, reviews, and related details. Ensure your responses are factually correct.
+const systemPrompt = `You are an intelligent assistant specialized in helping students find the best professors based on their specific queries. When a user asks about professors, use the provided information and perform a Retrieval-Augmented Generation (RAG) to search and rank professors according to their teaching quality, course difficulty, and student reviews. Always try to match data to the user's query. If a user asks about the best teacher in a department give them the teacher in that the department with the best ratings and reviews. Don't give the user teachers that aren't within the subject they are asking for if they do ask for a specific subject.
 
-2. **Handle Queries Effectively**:
-   - **Review Information**: If asked about a specific professor, provide information from the reviews and ratings database.
-   - **General Queries**: Answer general questions about the platform, such as how to use the site or how to leave a review.
-   - **Search Queries**: Assist users in searching for professors by name, department, or course.
+For each professor, include the following details:
 
-3. **Provide the Top Professors**:
-   -**Search Through the Database**: If given a subject or keyword, list the most relevant professors. 
-   - For each professor, include:
-     - Name: The professor's full name.
-     - Department: The department or subject area they teach in.
-     - Rating: The average rating from student reviews.
-     - Summary: A brief summary of why this professor is a good match, based on their teaching style, course difficulty, or any other relevant factors.
-   - Ensure that the recommendations are clear, concise, and directly address the student's requirements.
+Name: The full name of the professor.
+Department: The department or faculty they belong to.
+Overall Rating: A summary rating based on student reviews.
+Course Difficulty: A rating or comment on the difficulty of the courses they teach.
+Top Review Comment: A highlighted review from a student that encapsulates the professor’s teaching style or reputation.
+Pros: What students generally appreciate about the professor.
+Cons: Areas where students have had concerns.
+Always provide the information clearly and concisely, ensuring it is easy for the student to compare the top 3 professors.`;
 
-4. **Maintain Professionalism**: Always respond respectfully and professionally. Avoid personal opinions or unverified claims.
-
-5. **Clarify Unclear Requests**: If a user’s request is unclear, ask follow-up questions to gather more information before providing a response.
-
-6. **Data Privacy**: Do not share personal data or sensitive information about users or professors. 
-
-Examples of interactions:
-- User asks: "What is Professor Smith's rating in the Computer Science department?"
-  - Response: "Professor Smith has an average rating of 4.2 stars in the Computer Science department based on 15 reviews."
-
-- User asks: "How do I leave a review for a professor?"
-  - Response: "To leave a review, go to the professor's page and click on the 'Leave a Review' button. Fill out the review form and submit it."
-
-- User asks: "Can you find me reviews for Professor Jones?"
-  - Response: "Please provide the department or course Professor Jones teaches to help narrow down the search."
-`
+const chatBot = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  systemInstruction: systemPrompt,
+});
 
 export async function POST(req) {
-    const data = await req.json()
-    
-    const pc = new Pinecone({
-        apiKey: process.env.PINECONE_API_KEY,
-    })
-    const index = pc.index('rag').namespace('ns1')
-    const openai = new OpenAI()
+  //3 Steps, read data, make embedding, generate results with embeddings
+  const data = await req.json();
+  const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+  const index = pc.index("rag").namespace("ns1");
+  //Where are taking the last index of data since it is a chat. The users question will be the last thing in messages
+  const text = data[data.length - 1].content;
 
-    const text = data[data.length - 1].content
-    const embedding = await openai.embeddings.create({
-        model: 'text-embedding-3-small',
-        input: text,
-        encoding_format: 'float',
-    })
+  //Create an embedding out of the users queury
+  const result = await model.embedContent(text);
+  const embedding = result.embedding;
 
-    const results = await index.query({
-        topK: 5,
-        includeMetadata: true,
-        vector: embedding.data[0].embedding,
-    })
+  //Send the users message as an embedding to pinecone
+  const results = await index.query({
+    topK: 3,
+    includeMetadata: true,
+    //Might be wrong
+    vector: embedding.values,
+  });
 
-    let resultString = ''
-    results.matches.forEach((match) => {
-        resultString += `
-        Returned Results:
+  let resultString = "";
+  results.matches.forEach((match) => {
+    resultString += `\n
         Professor: ${match.id}
         Review: ${match.metadata.review}
         Subject: ${match.metadata.subject}
-        Stars: ${match.metadata.stars}
-        \n\n`
-    })
+        Stars ${match.metadata.stars}
+        \n\n
+        `;
+  });
 
-    const lastMessage = data[data.length - 1]
-    const lastMessageContent = lastMessage.content + resultString
-    const lastDataWithoutLastMessage = data.slice(0, data.length - 1)
-
-    const completion = await openai.chat.completions.create({
-        messages: [
-          {role: 'system', content: systemPrompt},
-          ...lastDataWithoutLastMessage,
-          {role: 'user', content: lastMessageContent},
-        ],
-        model: 'gpt-4o-mini',
-        stream: true,
-    })
-
-    const stream = new ReadableStream({
-        async start(controller) {
-          const encoder = new TextEncoder()
-          try {
-            for await (const chunk of completion) {
-              const content = chunk.choices[0]?.delta?.content
-              if (content) {
-                const text = encoder.encode(content)
-                controller.enqueue(text)
-              }
-            }
-          } catch (err) {
-            controller.error(err)
-          } finally {
-            controller.close()
+  const lastMessage = data[data.length - 1];
+  const lastMessageContent = lastMessage.content + resultString;
+  const lastDataWithoutLastMessage = data.slice(0, data.length - 1);
+  const completion = await chatBot.generateContentStream(lastMessageContent);
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      try {
+        for await (const chunk of completion.stream) {
+          const content = chunk.text();
+          if (content) {
+            const text = encoder.encode(content);
+            // process.stdout.write(text);
+            // console.log(text);
+            controller.enqueue(text);
           }
-        },
-    })
-    return new NextResponse(stream)
+        }
+      } catch (err) {
+        controller.error(err);
+      } finally {
+        controller.close();
+      }
+    },
+  });
 
-  }
-
+  return new NextResponse(stream);
+}
