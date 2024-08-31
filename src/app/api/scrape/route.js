@@ -99,10 +99,10 @@ export async function POST(req) {
     })();
 
     // Return a success response
-    return NextResponse.json({ message: 'URL scraped successfully. The professor has been added to the database!' });
+    return NextResponse.json({ message: 'URL scraped successfully. The professor has been added into the database!' });
 
   } catch (error) {
     console.error('Error processing request:', error);
-    return NextResponse.json({ error: 'Failed to scrape URL. Please ensure that the format of the url is correct.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to scrape URL. Please ensure that the format of the url is correct: https://www.ratemyprofessors.com/professor/#' }, { status: 500 });
   }
 }
