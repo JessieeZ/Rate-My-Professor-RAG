@@ -41,10 +41,8 @@ export default function Home() {
       console.error('Error:', error);
       alert('An error occurred while scraping the website.');
     }
-  
       setWebsite("");
   };
-
 
   return (
     <BackgroundBox>
@@ -108,7 +106,7 @@ export default function Home() {
             height: "100px",
             display: "flex",
             flexDirection: "column",
-            gap: 0,
+            gap: 2,
           }}
         >
           <TextField
