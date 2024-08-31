@@ -42,71 +42,60 @@ Examples of interactions:
 `
 
 export async function POST(req) {
-    const data = await req.json()
-    
-    const pc = new Pinecone({
-        apiKey: process.env.PINECONE_API_KEY,
-    })
-    const index = pc.index('rag').namespace('ns1')
-    const openai = new OpenAI()
+  //3 Steps, read data, make embedding, generate results with embeddings
+  const data = await req.json();
+  const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+  const index = pc.index("rag").namespace("ns1");
+  //Where are taking the last index of data since it is a chat. The users question will be the last thing in messages
+  const text = data[data.length - 1].content;
 
-    const text = data[data.length - 1].content
-    const embedding = await openai.embeddings.create({
-        model: 'text-embedding-3-small',
-        input: text,
-        encoding_format: 'float',
-    })
+  //Create an embedding out of the users queury
+  const result = await model.embedContent(text);
+  const embedding = result.embedding;
 
-    const results = await index.query({
-        topK: 5,
-        includeMetadata: true,
-        vector: embedding.data[0].embedding,
-    })
+  //Send the users message as an embedding to pinecone
+  const results = await index.query({
+    topK: 3,
+    includeMetadata: true,
+    //Might be wrong
+    vector: embedding.values,
+  });
 
-    let resultString = ''
-    results.matches.forEach((match) => {
-        resultString += `
-        Returned Results:
+  let resultString = "";
+  results.matches.forEach((match) => {
+    resultString += `\n
         Professor: ${match.id}
         Review: ${match.metadata.review}
         Subject: ${match.metadata.subject}
-        Stars: ${match.metadata.stars}
-        \n\n`
-    })
+        Stars ${match.metadata.stars}
+        \n\n
+        `;
+  });
 
-    const lastMessage = data[data.length - 1]
-    const lastMessageContent = lastMessage.content + resultString
-    const lastDataWithoutLastMessage = data.slice(0, data.length - 1)
-
-    const completion = await openai.chat.completions.create({
-        messages: [
-          {role: 'system', content: systemPrompt},
-          ...lastDataWithoutLastMessage,
-          {role: 'user', content: lastMessageContent},
-        ],
-        model: 'gpt-4o-mini',
-        stream: true,
-    })
-
-    const stream = new ReadableStream({
-        async start(controller) {
-          const encoder = new TextEncoder()
-          try {
-            for await (const chunk of completion) {
-              const content = chunk.choices[0]?.delta?.content
-              if (content) {
-                const text = encoder.encode(content)
-                controller.enqueue(text)
-              }
-            }
-          } catch (err) {
-            controller.error(err)
-          } finally {
-            controller.close()
+  const lastMessage = data[data.length - 1];
+  const lastMessageContent = lastMessage.content + resultString;
+  const lastDataWithoutLastMessage = data.slice(0, data.length - 1);
+  const completion = await chatBot.generateContentStream(lastMessageContent);
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      try {
+        for await (const chunk of completion.stream) {
+          const content = chunk.text();
+          if (content) {
+            const text = encoder.encode(content);
+            // process.stdout.write(text);
+            // console.log(text);
+            controller.enqueue(text);
           }
-        },
-    })
-    return new NextResponse(stream)
+        }
+      } catch (err) {
+        controller.error(err);
+      } finally {
+        controller.close();
+      }
+    },
+  });
 
-  }
-
+  return new NextResponse(stream);
+}
