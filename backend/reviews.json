@@ -59,66 +59,6 @@
       "subject": "Economics",
       "stars": 4,
       "review": "Prof. Kim explains complex economic theories clearly. His real-world examples are very helpful."
-    },
-    {
-      "professor": "Dr. Jessica Patel",
-      "subject": "Art History",
-      "stars": 5,
-      "review": "Dr. Patel's enthusiasm for art is infectious. Her virtual museum tours are a highlight of the course."
-    },
-    {
-      "professor": "Prof. Thomas Wright",
-      "subject": "Philosophy",
-      "stars": 3,
-      "review": "Prof. Wright's lectures can be hard to follow, but the reading list is excellent. Office hours are helpful."
-    },
-    {
-      "professor": "Dr. Amanda Foster",
-      "subject": "Environmental Science",
-      "stars": 4,
-      "review": "Dr. Foster's field trips make learning fun and practical. Her assignments encourage critical thinking."
-    },
-    {
-      "professor": "Prof. Christopher Lee",
-      "subject": "Political Science",
-      "stars": 2,
-      "review": "Prof. Lee seems biased in his lectures. Class discussions often get off-topic."
-    },
-    {
-      "professor": "Dr. Sophia Rodriguez",
-      "subject": "Linguistics",
-      "stars": 5,
-      "review": "Dr. Rodriguez is a brilliant teacher. Her interactive lessons make learning languages enjoyable."
-    },
-    {
-      "professor": "Prof. William Chang",
-      "subject": "Business Administration",
-      "stars": 4,
-      "review": "Prof. Chang's real-world experience adds value to his classes. Group projects are well-designed."
-    },
-    {
-      "professor": "Dr. Elizabeth Moore",
-      "subject": "Anthropology",
-      "stars": 3,
-      "review": "Dr. Moore's lectures are informative but can be monotonous. Her fieldwork stories are interesting though."
-    },
-    {
-      "professor": "Prof. Andrew Davis",
-      "subject": "Music Theory",
-      "stars": 5,
-      "review": "Prof. Davis is an exceptional teacher. His composition workshops are incredibly inspiring."
-    },
-    {
-      "professor": "Dr. Natalie Wong",
-      "subject": "Neuroscience",
-      "stars": 4,
-      "review": "Dr. Wong explains complex brain functions clearly. Her lab demonstrations are fascinating."
-    },
-    {
-      "professor": "Prof. Kevin O'Brien",
-      "subject": "Marketing",
-      "stars": 3,
-      "review": "Prof. O'Brien's lectures are decent, but the course could use more practical applications. Guest speakers are a plus."
     }
   ]
 }

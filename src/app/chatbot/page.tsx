@@ -91,7 +91,14 @@ export default function Home() {
 
   return (
     <>
-      <Box sx={{background: 'linear-gradient(to right, #000000, #808080)'}}>
+      <Box 
+        sx={{
+          width: '100vw',
+          background: 'linear-gradient(to right, #000000, #808080)',
+          margin: 0, 
+          padding: 0,
+          overflowX: 'hidden', // Ensure no horizontal scrolling
+        }}>
         <Toolbar sx={{ padding: '30px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <Link href="/" passHref>
             <Image src={logo} alt="ProInsight Logo" width={125} height={125} />
@@ -122,8 +129,8 @@ export default function Home() {
                   }}
                 >
                   <MenuItem onClick={handleMenuClose} component="a" href="/" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }} >Home</MenuItem>
-                  <MenuItem onClick={handleMenuClose} component="a" href="/review" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Review</MenuItem>
-                  <MenuItem onClick={handleMenuClose} component="a" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Search</MenuItem>
+                  <MenuItem onClick={handleMenuClose} component="a" href="/addProfessor" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Add Professor</MenuItem>
+                  {/*<MenuItem onClick={handleMenuClose} component="a" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Search</MenuItem>*/}
                 </Menu>
               </div>
             )}
@@ -133,12 +140,12 @@ export default function Home() {
                 <StyledButton color="inherit" href="/" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
                   Home
                 </StyledButton>
-                <StyledButton color="inherit" href="/review" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
-                  Review
+                <StyledButton color="inherit" href="/addProfessor" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Add Professor
                 </StyledButton>
-                <StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                {/*<StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
                   Search
-                </StyledButton>
+                </StyledButton>*/}
               </div>
             )}
           </div>
