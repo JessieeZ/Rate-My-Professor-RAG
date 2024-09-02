@@ -19,6 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import logo from "/public/images/icon_white.png";
 import RobotStudy from "/public/images/main.png";
 import React, { useEffect, useState } from "react";
+import Link from 'next/link';
 
 const StyledButton = styled(Button)({
   borderRadius: "20px",
@@ -38,118 +39,56 @@ export default function Navbar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
-    <Toolbar
-      sx={{
-        padding: "30px 0",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <Image src={logo} alt="ProInsight Logo" width={125} height={125} />
-      <div>
-        {isMobile && (
-          <div className="mobile-menu">
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              aria-controls="mobile-menu"
-              aria-haspopup="true"
-              onClick={handleMenuOpen}
-            >
-              <MenuIcon sx={{ color: "#FFFFFF" }} />
-            </IconButton>
-            <Menu
-              id="mobile-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              sx={{
-                "& .MuiMenu-paper": {
-                  backgroundColor: "#444444",
-                },
-              }}
-            >
-              <MenuItem
-                onClick={handleMenuClose}
-                component="a"
-                href="/chatbot"
-                style={{
-                  color: "#FFFFFF",
-                  fontFamily: "Cormorant Garamond, serif",
-                  fontSize: "1.5rem",
-                }}
-              >
-                Chat
-              </MenuItem>
-              <MenuItem
-                onClick={handleMenuClose}
-                component="a"
-                href="/addProfessor"
-                style={{
-                  color: "#FFFFFF",
-                  fontFamily: "Cormorant Garamond, serif",
-                  fontSize: "1.5rem",
-                }}
-              >
-                Add
-              </MenuItem>
-              <MenuItem
-                onClick={handleMenuClose}
-                component="a"
-                href="/search"
-                style={{
-                  color: "#FFFFFF",
-                  fontFamily: "Cormorant Garamond, serif",
-                  fontSize: "1.5rem",
-                }}
-              >
-                Search
-              </MenuItem>
-            </Menu>
+    <Toolbar sx={{ padding: '30px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Link href="/" passHref>
+            <Image src={logo} alt="ProInsight Logo" width={125} height={125} />
+          </Link>
+          <div>
+            {isMobile && (
+              <div className="mobile-menu">
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  aria-controls="mobile-menu"
+                  aria-haspopup="true"
+                  onClick={handleMenuOpen}
+                >
+                  <MenuIcon sx={{color: '#FFFFFF'}}/>
+                </IconButton>
+                <Menu
+                  id="mobile-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                  sx={{
+                    '& .MuiMenu-paper': {
+                      backgroundColor: '#444444', 
+                    },
+                  }}
+                >
+                  <MenuItem onClick={handleMenuClose} component="a" href="/" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }} >Home</MenuItem>
+                  <MenuItem onClick={handleMenuClose} component="a" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Chat</MenuItem>
+                  {/*<MenuItem onClick={handleMenuClose} component="a" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Search</MenuItem>*/}
+                </Menu>
+              </div>
+            )}
+            
+            {!isMobile && (
+              <div className="desktop-menu">
+                <StyledButton color="inherit" href="/" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Home
+                </StyledButton>
+                <StyledButton color="inherit" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Chat
+                </StyledButton>
+                {/*<StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                  Search
+                </StyledButton>*/}
+              </div>
+            )}
           </div>
-        )}
-
-        {!isMobile && (
-          <div className="desktop-menu">
-            <StyledButton
-              color="inherit"
-              href="/chatbot"
-              style={{
-                color: "#FFFFFF",
-                fontFamily: "Cormorant Garamond, serif",
-                fontSize: "1.5rem",
-              }}
-            >
-              Chat
-            </StyledButton>
-            <StyledButton
-              color="inherit"
-              href="/addProfessor"
-              style={{
-                color: "#FFFFFF",
-                fontFamily: "Cormorant Garamond, serif",
-                fontSize: "1.5rem",
-              }}
-            >
-              Add
-            </StyledButton>
-            <StyledButton
-              color="inherit"
-              href="/search"
-              style={{
-                color: "#FFFFFF",
-                fontFamily: "Cormorant Garamond, serif",
-                fontSize: "1.5rem",
-              }}
-            >
-              Search
-            </StyledButton>
-          </div>
-        )}
-      </div>
-    </Toolbar>
+        </Toolbar>
   );
 }

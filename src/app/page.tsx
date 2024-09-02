@@ -26,20 +26,32 @@ interface TypingEffectProps {
 }
 
 const TypingEffect: React.FC<TypingEffectProps> = ({ text }) => {
-  const [displayText, setDisplayText] = useState("");
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setDisplayText(text.substring(0, index + 1));
-      index += 1;
-      if (index === text.length) {
-        clearInterval(interval);
-      }
-    }, 100);
+    const handleTyping = () => {
+      if (!isDeleting) {
+        setDisplayText((prev) => prev + text.charAt(index));
+        setIndex((prev) => prev + 1);
 
-    return () => clearInterval(interval);
-  }, [text]);
+        if (index === text.length) {
+          setTimeout(() => setIsDeleting(true), 1000); 
+        }
+      } else {
+        setDisplayText((prev) => prev.slice(0, -1));
+
+        if (displayText.length === 0) {
+          setIsDeleting(false);
+          setIndex(0);
+        }
+      }
+    };
+
+    const timeout = setTimeout(handleTyping, isDeleting ? 100 : 100); 
+    return () => clearTimeout(timeout);
+  }, [index, isDeleting, text, displayText]);
 
   return (
     <div
@@ -129,42 +141,9 @@ export default function Home() {
                       },
                     }}
                   >
-                    <MenuItem
-                      onClick={handleMenuClose}
-                      component="a"
-                      href="/chatbot"
-                      style={{
-                        color: "#FFFFFF",
-                        fontFamily: "Cormorant Garamond, serif",
-                        fontSize: "1.5rem",
-                      }}
-                    >
-                      Chat
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleMenuClose}
-                      component="a"
-                      href="/addProfessor"
-                      style={{
-                        color: "#FFFFFF",
-                        fontFamily: "Cormorant Garamond, serif",
-                        fontSize: "1.5rem",
-                      }}
-                    >
-                      Add
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleMenuClose}
-                      component="a"
-                      href="/search"
-                      style={{
-                        color: "#FFFFFF",
-                        fontFamily: "Cormorant Garamond, serif",
-                        fontSize: "1.5rem",
-                      }}
-                    >
-                      Search
-                    </MenuItem>
+                    <MenuItem onClick={handleMenuClose} component="a" href="/chatbot" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }} >Chat</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component="a" href="/addProfessor" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Add Professors</MenuItem>
+                    {/*<MenuItem onClick={handleMenuClose} component="a" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>Search</MenuItem>*/}
                   </Menu>
                 </div>
               )}
@@ -182,28 +161,12 @@ export default function Home() {
                   >
                     Chat
                   </StyledButton>
-                  <StyledButton
-                    color="inherit"
-                    href="/addProfessor"
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Cormorant Garamond, serif",
-                      fontSize: "1.5rem",
-                    }}
-                  >
-                    Add
+                  <StyledButton color="inherit" href="/addProfessor" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
+                    Add Professors
                   </StyledButton>
-                  <StyledButton
-                    color="inherit"
-                    href="/search"
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Cormorant Garamond, serif",
-                      fontSize: "1.5rem",
-                    }}
-                  >
+                  {/*<StyledButton color="inherit" href="/search" style={{ color:'#FFFFFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem' }}>
                     Search
-                  </StyledButton>
+                  </StyledButton>*/}
                 </div>
               )}
             </div>
@@ -269,13 +232,8 @@ export default function Home() {
                   </Box>
                 )}
                 {isMobile && (
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <Image
-                      src={RobotStudy}
-                      alt="Study Image"
-                      width={350}
-                      height={375}
-                    />
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Image src={RobotStudy} alt="Study Image" width={375} height={375} />
                   </Box>
                 )}
               </Grid>
