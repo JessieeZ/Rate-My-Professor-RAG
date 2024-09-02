@@ -7,6 +7,7 @@ import { styled } from '@mui/system';
 import logo from '/public/images/icon_white.png';
 import MenuIcon from '@mui/icons-material/Menu'; 
 import Link from 'next/link';
+import "./page.css"
 
 const StyledButton = styled(Button)({
   borderRadius: '20px',
@@ -150,8 +151,8 @@ export default function Home() {
             )}
           </div>
         </Toolbar>
+        <div className="rowApp">
         <Box
-          width="100vw"
           height="calc(100vh - 64px)"
           display="flex"
           flexDirection="column"
@@ -176,6 +177,7 @@ export default function Home() {
             p={2}
             spacing={2}
             bgcolor="background.paper"
+            fontFamily="Montserrat', sans-serif"
           >
             <Stack
               direction="column"
@@ -264,6 +266,100 @@ export default function Home() {
             </Stack>
           </Stack>
         </Box>
+        <div className="filterBox">
+        <div className="filterContainer">
+          <div className="filterBox-title">
+            <h1>Advanced Search</h1>
+            <hr />
+          </div>
+          <div className="advancedSearch">
+            <div style={{ marginBottom: 20 }} className="searchName">
+              <label htmlFor="pName">Professor Name: </label>
+              <select name="pName" id="pName">
+              <option value="">Pick Professor</option>
+              <option value="Alice Smith">Alice Smith</option>
+              <option value="Emma Lore">Emma Lore</option>
+              <option value="Emily Johnson">Emily Johnson</option>
+              <option value="Jacob Williams">Jacob Williams</option>
+                <option value="John Doe">John Doe</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: 20 }} className="searchClass">
+              <label htmlFor="cName">Class: </label>
+              <select name="cName" id="cName">
+                <option value="">Pick Class</option>
+                <option value="Algorithms">Algorithms</option>
+                <option value="Calculus">Calculus</option>
+                <option value="Data Structures">Data Structures</option>
+                <option value="Linear Algebra">Linear Algebra</option>
+                <option value="Quantum Mechanics">Quantum Mechanics</option>
+              </select>
+            </div>
+
+            <div className="searchRating">
+              <label>Rating: </label>
+              <div className="ratingContainer">
+                <input type="radio" id="rating5" name="rating" value="5" />
+                <label htmlFor="rating5">
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                </label>
+              </div>
+              <div className="ratingContainer">
+                <input type="radio" id="rating4" name="rating" value="4" />
+                <label htmlFor="rating4">
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9734;</span>
+                </label>
+              </div>
+
+              <div className="ratingContainer">
+                <input type="radio" id="rating3" name="rating" value="3" />
+                <label htmlFor="rating3">
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9734;</span>
+                  <span>&#9734;</span>
+                </label>
+              </div>
+              <div className="ratingContainer">
+                <input type="radio" id="rating2" name="rating" value="2" />
+                <label htmlFor="rating2">
+                  <span>&#9733;</span>
+                  <span>&#9733;</span>
+                  <span>&#9734;</span>
+                  <span>&#9734;</span>
+                  <span>&#9734;</span>
+                </label>
+              </div>
+
+              <div className="ratingContainer">
+                <input type="radio" id="rating1" name="rating" value="1" />
+                <label htmlFor="rating1">
+                  <span>&#9733;</span>
+                  <span>&#9734;</span>
+                  <span>&#9734;</span>
+                  <span>&#9734;</span>
+                  <span>&#9734;</span>
+                </label>
+              </div>
+            </div>
+
+            {/* <div className="applyButton">
+              <button>Apply</button>
+            </div> */}
+          </div>
+        </div>
+      </div>
+        </div>
       </Box>
       <style jsx>{`
         .desktop-menu {
