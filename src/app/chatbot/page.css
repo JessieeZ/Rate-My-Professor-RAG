@@ -1,0 +1,285 @@
+.App {
+    height: 100vh;
+    width: 100%;
+    padding: 0px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mainBox{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  ::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  ::-webkit-scrollbar-track {
+  border-radius: 50px;
+    background-color: #ffffff;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(0, 0, 0, 0.157);
+  }
+  
+  .App .box {
+    width: 100%;
+    height: 80%;
+    background-color: #c86fc9;
+    background-image: linear-gradient(316deg, #c86fc9 0%, #f79ad3 74%);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.361);
+    display: flex;
+    border-radius: 50px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.msgContainer::-webkit-scrollbar {
+    width: 30px;
+}
+
+.msgContainer::-webkit-scrollbar-track {
+  background-clip: content-box;
+  border: 10px solid transparent;  margin: 20px;
+  border-radius: 50px;
+    background-color: #ffffff;
+}
+
+.msgContainer::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    border: 10px solid transparent;  margin: 20px;
+    border-radius: 50px;
+    background-color: rgba(0, 0, 0, 0.157);
+}
+  
+  .box .center {
+    border-radius: 50px;
+    width: 100%;
+    height: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .center .msgContainer{
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .msgContainer .aiMsg{
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    text-align: left;
+    margin-bottom: 40px;
+  }
+  
+  .aiMsg h2{
+    background-color:rgb(255, 255, 255);
+    max-width:80%;
+    font-weight: 300;
+    line-height: 40px;
+    width: fit-content;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+  }
+  
+  .msgContainer .userMsg{
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: right;
+    text-align: left;
+  }
+
+  .userMsg h2{
+    background-color:rgb(255, 255, 255);
+    max-width:80%;
+    width: fit-content;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    font-weight: 300;
+  }
+
+  .textInput{
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .textInput input{
+    width: 78%;
+    padding: 20px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+  }
+
+  .textInput button {
+    width: 18%;
+    padding: 20px;
+    background-color: #c86fc9;
+    background-image: linear-gradient(316deg, #c86fc9 0%, #f79ad3 74%);
+    color: white;
+    font-weight: 900;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.202);
+    border: none;
+    outline: none;
+    border-radius: 50px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .textInput button:active {
+    opacity: 0.6;
+  }
+
+  .filterBox{ 
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .filterContainer{
+    background: #ffffff;
+    padding: 30px 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.321);
+    border-radius: 10px;
+  }
+
+  .advancedSearch{
+    width: 100%;
+  }
+
+  .filterBox-title{
+    margin-bottom: 30px;
+  }
+
+  .filterBox-title h1{
+    font-size: 50px;
+    font-weight: 300;
+  }
+
+  label{
+    font-size: 30px;
+    font-weight: 300;
+  }
+
+  hr{
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid #808080;
+    margin: 1em 0;
+    padding: 0;
+  }
+
+  select{
+    background-image: linear-gradient(to right, #000000, #808080);
+    font-size: 25px;
+    color: rgb(255, 255, 255);
+    font-weight: 400;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.43);
+  }
+
+  .searchRating{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .searchRating div{
+    margin-left: 20px;
+  }
+
+  .ratingContainer input{
+    margin-right: 20px;
+    margin-top: 20px;
+  }
+
+  .ratingContainer label{
+    margin-bottom: -30px;
+  }
+
+  .ratingContainer span{
+    font-size: 2.5rem;
+    color: grey ;
+  }
+
+  .ratingContainer input[type="radio"] {
+    appearance: none; /* Remove default radio button appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin: 0 5px 0 0;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  }
+
+  .ratingContainer input[type="radio"]:checked {
+    background-image: linear-gradient(to right, #000000, #808080);
+    border-color:rgba(255, 255, 255, 0.861);
+  }
+
+  .applyButton{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .applyButton button{
+    padding: 20px 40px;
+    background-color: #c86fc9;
+    background-image: linear-gradient(316deg, #c86fc9 0%, #f79ad3 74%);
+    color: white;
+    font-weight: 900;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.202);
+    border: none;
+    outline: none;
+    border-radius: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .applyButton button:active {
+    opacity: 0.6;
+  }
+
+  .rowApp{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
